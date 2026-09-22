@@ -45,6 +45,13 @@
                 Review
             </a>
 
+            <a href="{{ url_for(
+                'edit_flashcard',
+                card_id=card.id
+            ) }}">
+                Edit
+            </a>
+
         </article>
 
     {% endfor %}

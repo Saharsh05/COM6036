@@ -479,5 +479,82 @@ def flashcards():
         "flashcards.html",
         cards=cards
     )
+@app.route(
+    "/flashcards/<int:card_id>/edit",
+    methods=["GET", "POST"]
+)
+@login_required
+def edit_flashcard(card_id):
+
+    card = Flashcard.query.filter_by(
+        id=card_id,
+        user_id=current_user.id
+    ).first_or_404()
+
+    subjects = Subject.query.filter_by(
+        user_id=current_user.id
+    ).all()
+
+    if request.method == "POST":
+
+        question = request.form.get(
+            "question",
+            ""
+        ).strip()
+
+        answer = request.form.get(
+            "answer",
+            ""
+        ).strip()
+
+        subject_id = request.form.get(
+            "subject_id",
+            type=int
+        )
+
+        subject = Subject.query.filter_by(
+            id=subject_id,
+            user_id=current_user.id
+        ).first()
+
+        if not question or not answer:
+            flash(
+                "Question and answer are required."
+            )
+
+            return redirect(
+                url_for(
+                    "edit_flashcard",
+                    card_id=card.id
+                )
+            )
+
+        if not subject:
+            flash("Invalid subject.")
+
+            return redirect(
+                url_for(
+                    "edit_flashcard",
+                    card_id=card.id
+                )
+            )
+
+        card.question = question
+        card.answer = answer
+        card.subject_id = subject.id
+
+        db.session.commit()
+
+        flash("Flashcard updated.")
+
+        return redirect(
+            url_for("flashcards")
+        )
+
+    return render_template(
+        "edit_flashcard.html",
+        card=card,
+        subjects=subjects
+    )
 if __name__ == "__main__":
     app.run(debug=True)
