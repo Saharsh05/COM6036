@@ -1,0 +1,69 @@
+{% extends "base.html" %}
+
+
+{% block content %}
+
+<h2>Create Flashcard</h2>
+
+
+<form method="POST">
+
+    <input
+        type="hidden"
+        name="csrf_token"
+        value="{{ csrf_token() }}"
+    >
+
+
+    <label for="subject_id">
+        Subject
+    </label>
+
+    <select
+        id="subject_id"
+        name="subject_id"
+        required
+    >
+
+        {% for subject in subjects %}
+
+            <option value="{{ subject.id }}">
+
+                {{ subject.name }}
+
+            </option>
+
+        {% endfor %}
+
+    </select>
+
+
+    <label for="question">
+        Question
+    </label>
+
+    <textarea
+        id="question"
+        name="question"
+        required
+    ></textarea>
+
+
+    <label for="answer">
+        Answer
+    </label>
+
+    <textarea
+        id="answer"
+        name="answer"
+        required
+    ></textarea>
+
+
+    <button type="submit">
+        Save Flashcard
+    </button>
+
+</form>
+
+{% endblock %}

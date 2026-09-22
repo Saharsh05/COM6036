@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+
+
+{% block content %}
+
+<h2>Create subject</h2>
+
+
+<form method="POST">
+
+    <input
+        type="hidden"
+        name="csrf_token"
+        value="{{ csrf_token() }}"
+    >
+
+
+    <label for="name">
+        Subject name
+    </label>
+
+    <input
+        id="name"
+        name="name"
+        required
+    >
+
+
+    <button type="submit">
+        Create Subject
+    </button>
+
+</form>
+
+{% endblock %}

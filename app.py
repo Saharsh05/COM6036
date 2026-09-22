@@ -241,6 +241,134 @@ def logout():
     return redirect(
         url_for("login")
     )
+@app.route(
+    "/subjects/new",
+    methods=["GET", "POST"]
+)
+@login_required
+def create_subject():
 
+    if request.method == "POST":
+
+        name = request.form.get(
+            "name",
+            ""
+        ).strip()
+
+
+        if not name:
+
+            flash(
+                "Please enter a subject name."
+            )
+
+            return redirect(
+                url_for("create_subject")
+            )
+
+
+        subject = Subject(
+            name=name,
+            user_id=current_user.id
+        )
+
+
+        db.session.add(
+            subject
+        )
+
+        db.session.commit()
+
+
+        return redirect(
+            url_for("dashboard")
+        )
+
+
+    return render_template(
+        "createSubject.html"
+    )
+@app.route(
+    "/flashcards/new",
+    methods=["GET", "POST"]
+)
+@login_required
+def create_flashcard():
+
+    subjects = Subject.query.filter_by(
+        user_id=current_user.id
+    ).all()
+
+
+    if request.method == "POST":
+
+        question = request.form.get(
+            "question",
+            ""
+        ).strip()
+
+        answer = request.form.get(
+            "answer",
+            ""
+        ).strip()
+
+        subject_id = request.form.get(
+            "subject_id",
+            type=int
+        )
+
+
+        subject = Subject.query.filter_by(
+            id=subject_id,
+            user_id=current_user.id
+        ).first()
+
+
+        if not subject:
+
+            flash(
+                "Invalid subject."
+            )
+
+            return redirect(
+                url_for("create_flashcard")
+            )
+
+
+        if not question or not answer:
+
+            flash(
+                "Question and answer are required."
+            )
+
+            return redirect(
+                url_for("create_flashcard")
+            )
+
+
+        card = Flashcard(
+            question=question,
+            answer=answer,
+            subject_id=subject.id,
+            user_id=current_user.id
+        )
+
+
+        db.session.add(
+            card
+        )
+
+        db.session.commit()
+
+
+        return redirect(
+            url_for("dashboard")
+        )
+
+
+    return render_template(
+        "createFlashcard.html",
+        subjects=subjects
+    )
 if __name__ == "__main__":
     app.run(debug=True)
