@@ -464,5 +464,20 @@ def review_flashcard(card_id):
         "review.html",
         card=card
     )
+
+@app.route("/flashcards")
+@login_required
+def flashcards():
+
+    cards = Flashcard.query.filter_by(
+        user_id=current_user.id
+    ).order_by(
+        Flashcard.created_at.desc()
+    ).all()
+
+    return render_template(
+        "flashcards.html",
+        cards=cards
+    )
 if __name__ == "__main__":
     app.run(debug=True)
