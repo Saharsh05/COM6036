@@ -1,9 +1,9 @@
 import os
-
+from datetime import datetime, timezone
 from flask import Flask
 from dotenv import load_dotenv
 from sqlalchemy import text
-
+from revisionService import RevisionService
 from extensions import db, login_manager, csrf
 from models import User
 from models import Subject
@@ -225,13 +225,6 @@ def login():
         "login.html"
     )
 
-@app.route("/dashboard")
-@login_required
-def dashboard():
-
-    return render_template(
-        "dashboard.html"
-    )
 @app.route("/logout")
 @login_required
 def logout():
@@ -369,6 +362,102 @@ def create_flashcard():
     return render_template(
         "createFlashcard.html",
         subjects=subjects
+    )
+@app.route("/dashboard")
+@login_required
+def dashboard():
+
+    cards = Flashcard.query.filter_by(
+        user_id=current_user.id
+    ).all()
+
+
+    ranked_cards = []
+
+
+    for card in cards:
+
+        priority = (
+            RevisionService.calculate_priority(
+                card
+            )
+        )
+
+        ranked_cards.append(
+            {
+                "card": card,
+                "priority": priority
+            }
+        )
+
+
+    ranked_cards.sort(
+        key=lambda item: item["priority"],
+        reverse=True
+    )
+
+
+    return render_template(
+        "dashboard.html",
+        ranked_cards=ranked_cards
+    )
+@app.route(
+    "/review/<int:card_id>",
+    methods=["GET", "POST"]
+)
+@login_required
+def review(card_id):
+
+    card = Flashcard.query.filter_by(
+        id=card_id,
+        user_id=current_user.id
+    ).first_or_404()
+
+    if request.method == "POST":
+
+        rating = request.form.get(
+            "rating",
+            type=int
+        )
+
+        if rating is None or rating < 0 or rating > 5:
+
+            flash("Please select a confidence rating from 0 to 5.")
+
+            return redirect(
+                url_for("review", card_id=card.id)
+            )
+
+        review_time = datetime.now(timezone.utc)
+
+        review_log = ReviewLog(
+            rating=rating,
+            reviewed_at=review_time,
+            flashcard_id=card.id
+        )
+
+        card.last_reviewed_at = review_time
+
+        card.confidence = rating
+
+        card.next_review_at = (
+            RevisionService.calculate_next_review(
+                rating,
+                review_time
+            )
+        )
+
+        db.session.add(review_log)
+
+        db.session.commit()
+
+        return redirect(
+            url_for("dashboard")
+        )
+
+    return render_template(
+        "review.html",
+        card=card
     )
 if __name__ == "__main__":
     app.run(debug=True)

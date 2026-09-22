@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<h2>Review Flashcard</h2>
+
+<h3>{{ card.question }}</h3>
+
+<form method="POST">
+
+    <input
+        type="hidden"
+        name="csrf_token"
+        value="{{ csrf_token() }}"
+    >
+
+    <p>Answer:</p>
+
+    <p>
+        {{ card.answer }}
+    </p>
+
+    <p>How confident are you?</p>
+
+    <button type="submit" name="rating" value="0">0</button>
+    <button type="submit" name="rating" value="1">1</button>
+    <button type="submit" name="rating" value="2">2</button>
+    <button type="submit" name="rating" value="3">3</button>
+    <button type="submit" name="rating" value="4">4</button>
+    <button type="submit" name="rating" value="5">5</button>
+
+</form>
+
+{% endblock %}

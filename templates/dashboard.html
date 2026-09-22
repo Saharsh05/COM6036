@@ -20,4 +20,32 @@
     </a>
 </p>
 
+<h3>Your Flashcards</h3>
+
+{% if ranked_cards %}
+
+    {% for item in ranked_cards %}
+
+        <div>
+
+            <h4>{{ item.card.question }}</h4>
+
+            <p>
+                Priority: {{ item.priority }}
+            </p>
+
+            <a href="{{ url_for('review', card_id=item.card.id) }}">
+                Review
+            </a>
+
+        </div>
+
+    {% endfor %}
+
+{% else %}
+
+    <p>You don't have any flashcards yet.</p>
+
+{% endif %}
+
 {% endblock %}
