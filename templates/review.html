@@ -1,10 +1,37 @@
+
 {% extends "base.html" %}
+
 
 {% block content %}
 
 <h2>Review Flashcard</h2>
 
-<h3>{{ card.question }}</h3>
+
+<section>
+
+    <p>
+        <strong>Question:</strong>
+    </p>
+
+    <p>
+        {{ card.question }}
+    </p>
+
+
+    <details>
+
+        <summary>
+            Reveal answer
+        </summary>
+
+        <p>
+            {{ card.answer }}
+        </p>
+
+    </details>
+
+</section>
+
 
 <form method="POST">
 
@@ -14,21 +41,59 @@
         value="{{ csrf_token() }}"
     >
 
-    <p>Answer:</p>
 
-    <p>
-        {{ card.answer }}
-    </p>
+    <label for="rating">
+        How confident are you with this answer?
+    </label>
 
-    <p>How confident are you?</p>
+    <select
+        id="rating"
+        name="rating"
+        required
+    >
 
-    <button type="submit" name="rating" value="0">0</button>
-    <button type="submit" name="rating" value="1">1</button>
-    <button type="submit" name="rating" value="2">2</button>
-    <button type="submit" name="rating" value="3">3</button>
-    <button type="submit" name="rating" value="4">4</button>
-    <button type="submit" name="rating" value="5">5</button>
+        <option value="">
+            Select confidence
+        </option>
+
+        <option value="0">
+            0 - No recall
+        </option>
+
+        <option value="1">
+            1 - Very weak
+        </option>
+
+        <option value="2">
+            2 - Weak
+        </option>
+
+        <option value="3">
+            3 - Reasonable
+        </option>
+
+        <option value="4">
+            4 - Strong
+        </option>
+
+        <option value="5">
+            5 - Very strong
+        </option>
+
+    </select>
+
+
+    <button type="submit">
+        Save Review
+    </button>
 
 </form>
+
+
+<p>
+    <a href="{{ url_for('dashboard') }}">
+        Back to Dashboard
+    </a>
+</p>
 
 {% endblock %}

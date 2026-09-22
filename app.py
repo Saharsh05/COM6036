@@ -402,11 +402,11 @@ def dashboard():
         ranked_cards=ranked_cards
     )
 @app.route(
-    "/review/<int:card_id>",
+    "/flashcards/<int:card_id>/review",
     methods=["GET", "POST"]
 )
 @login_required
-def review(card_id):
+def review_flashcard(card_id):
 
     card = Flashcard.query.filter_by(
         id=card_id,
@@ -420,36 +420,41 @@ def review(card_id):
             type=int
         )
 
-        if rating is None or rating < 0 or rating > 5:
-
-            flash("Please select a confidence rating from 0 to 5.")
-
-            return redirect(
-                url_for("review", card_id=card.id)
+        if rating not in range(0, 6):
+            flash(
+                "Confidence rating must be between 0 and 5."
             )
 
-        review_time = datetime.now(timezone.utc)
+            return redirect(
+                url_for(
+                    "review_flashcard",
+                    card_id=card.id
+                )
+            )
 
-        review_log = ReviewLog(
-            rating=rating,
-            reviewed_at=review_time,
-            flashcard_id=card.id
-        )
-
-        card.last_reviewed_at = review_time
+        now = datetime.now(timezone.utc)
 
         card.confidence = rating
+        card.last_reviewed_at = now
 
         card.next_review_at = (
             RevisionService.calculate_next_review(
                 rating,
-                review_time
+                now
             )
+        )
+
+        review_log = ReviewLog(
+            flashcard_id=card.id,
+            rating=rating,
+            reviewed_at=now
         )
 
         db.session.add(review_log)
 
         db.session.commit()
+
+        flash("Review recorded successfully.")
 
         return redirect(
             url_for("dashboard")
