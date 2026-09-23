@@ -469,15 +469,31 @@ def review_flashcard(card_id):
 @login_required
 def flashcards():
 
-    cards = Flashcard.query.filter_by(
+    search = request.args.get(
+        "search",
+        ""
+    ).strip()
+
+    query = Flashcard.query.filter_by(
         user_id=current_user.id
-    ).order_by(
+    )
+
+    if search:
+
+        query = query.filter(
+            Flashcard.question.ilike(
+                f"%{search}%"
+            )
+        )
+
+    cards = query.order_by(
         Flashcard.created_at.desc()
     ).all()
 
     return render_template(
         "flashcards.html",
-        cards=cards
+        cards=cards,
+        search=search
     )
 @app.route(
     "/flashcards/<int:card_id>/edit",
@@ -555,6 +571,31 @@ def edit_flashcard(card_id):
         "edit_flashcard.html",
         card=card,
         subjects=subjects
+    )
+@app.route(
+    "/flashcards/<int:card_id>/delete",
+    methods=["POST"]
+)
+@login_required
+def delete_flashcard(card_id):
+
+    card = Flashcard.query.filter_by(
+        id=card_id,
+        user_id=current_user.id
+    ).first_or_404()
+
+    ReviewLog.query.filter_by(
+        flashcard_id=card.id
+    ).delete()
+
+    db.session.delete(card)
+
+    db.session.commit()
+
+    flash("Flashcard deleted.")
+
+    return redirect(
+        url_for("flashcards")
     )
 if __name__ == "__main__":
     app.run(debug=True)
