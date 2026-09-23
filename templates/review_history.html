@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+
+
+{% block content %}
+
+<h2>Review History</h2>
+
+<h3>{{ card.question }}</h3>
+
+
+{% if reviews %}
+
+    <table>
+
+        <thead>
+
+            <tr>
+                <th>Date</th>
+                <th>Confidence</th>
+            </tr>
+
+        </thead>
+
+        <tbody>
+
+            {% for review in reviews %}
+
+                <tr>
+
+                    <td>
+                        {{ review.reviewed_at.strftime(
+                            "%d %b %Y %H:%M"
+                        ) }}
+                    </td>
+
+                    <td>
+                        {{ review.rating }}/5
+                    </td>
+
+                </tr>
+
+            {% endfor %}
+
+        </tbody>
+
+    </table>
+
+{% else %}
+
+    <p>
+        This flashcard has not been reviewed yet.
+    </p>
+
+{% endif %}
+
+
+{% endblock %}

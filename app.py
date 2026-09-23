@@ -371,9 +371,11 @@ def dashboard():
         user_id=current_user.id
     ).all()
 
+    subjects = Subject.query.filter_by(
+        user_id=current_user.id
+    ).all()
 
     ranked_cards = []
-
 
     for card in cards:
 
@@ -390,16 +392,55 @@ def dashboard():
             }
         )
 
-
     ranked_cards.sort(
         key=lambda item: item["priority"],
         reverse=True
     )
 
+    card_count = len(cards)
+    subject_count = len(subjects)
+
+    if cards:
+
+        average_confidence = round(
+            sum(
+                card.confidence
+                for card in cards
+            ) / len(cards),
+            1
+        )
+
+    else:
+        average_confidence = 0
+
+    now = datetime.now(timezone.utc)
+
+    due_count = 0
+
+    for card in cards:
+
+        if card.next_review_at is None:
+            due_count += 1
+
+        else:
+
+            next_review = card.next_review_at
+
+            if next_review.tzinfo is None:
+                next_review = next_review.replace(
+                    tzinfo=timezone.utc
+                )
+
+            if next_review <= now:
+                due_count += 1
 
     return render_template(
         "dashboard.html",
-        ranked_cards=ranked_cards
+        ranked_cards=ranked_cards,
+        card_count=card_count,
+        subject_count=subject_count,
+        average_confidence=average_confidence,
+        due_count=due_count
     )
 @app.route(
     "/flashcards/<int:card_id>/review",
@@ -474,26 +515,48 @@ def flashcards():
         ""
     ).strip()
 
+    subject_id = request.args.get(
+        "subject_id",
+        type=int
+    )
+
     query = Flashcard.query.filter_by(
         user_id=current_user.id
     )
 
     if search:
-
         query = query.filter(
             Flashcard.question.ilike(
                 f"%{search}%"
             )
         )
 
+    if subject_id:
+
+        subject = Subject.query.filter_by(
+            id=subject_id,
+            user_id=current_user.id
+        ).first()
+
+        if subject:
+            query = query.filter_by(
+                subject_id=subject.id
+            )
+
     cards = query.order_by(
         Flashcard.created_at.desc()
+    ).all()
+
+    subjects = Subject.query.filter_by(
+        user_id=current_user.id
     ).all()
 
     return render_template(
         "flashcards.html",
         cards=cards,
-        search=search
+        subjects=subjects,
+        search=search,
+        selected_subject=subject_id
     )
 @app.route(
     "/flashcards/<int:card_id>/edit",
@@ -596,6 +659,28 @@ def delete_flashcard(card_id):
 
     return redirect(
         url_for("flashcards")
+    )
+@app.route(
+    "/flashcards/<int:card_id>/history"
+)
+@login_required
+def review_history(card_id):
+
+    card = Flashcard.query.filter_by(
+        id=card_id,
+        user_id=current_user.id
+    ).first_or_404()
+
+    reviews = ReviewLog.query.filter_by(
+        flashcard_id=card.id
+    ).order_by(
+        ReviewLog.reviewed_at.desc()
+    ).all()
+
+    return render_template(
+        "review_history.html",
+        card=card,
+        reviews=reviews
     )
 if __name__ == "__main__":
     app.run(debug=True)

@@ -25,5 +25,82 @@
         View Your Flashcards
     </a>
 </p>
+<section>
 
+    <h2>Study Overview</h2>
+
+    <p>
+        Subjects:
+        <strong>{{ subject_count }}</strong>
+    </p>
+
+    <p>
+        Flashcards:
+        <strong>{{ card_count }}</strong>
+    </p>
+
+    <p>
+        Due for Review:
+        <strong>{{ due_count }}</strong>
+    </p>
+
+    <p>
+        Average Confidence:
+        <strong>
+            {{ average_confidence }}/5
+        </strong>
+    </p>
+
+</section>
+
+
+<section>
+
+    <h2>Recommended Revision</h2>
+
+    {% if ranked_cards %}
+
+        {% for item in ranked_cards[:5] %}
+
+            <article>
+
+                <h3>
+                    {{ item.card.question }}
+                </h3>
+
+                <p>
+                    Subject:
+                    {{ item.card.subject.name }}
+                </p>
+
+                <p>
+                    Confidence:
+                    {{ item.card.confidence }}/5
+                </p>
+
+                <p>
+                    Priority:
+                    {{ item.priority }}
+                </p>
+
+                <a href="{{ url_for(
+                    'review_flashcard',
+                    card_id=item.card.id
+                ) }}">
+                    Review
+                </a>
+
+            </article>
+
+        {% endfor %}
+
+    {% else %}
+
+        <p>
+            Create your first flashcard to begin.
+        </p>
+
+    {% endif %}
+
+</section>
 {% endblock %}
