@@ -1,0 +1,305 @@
+* {
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    margin: 0;
+    font-family: Arial, Helvetica, sans-serif;
+    background: #f4f7fb;
+    color: #1f2937;
+    line-height: 1.6;
+}
+
+
+
+
+header {
+    background: #ffffff;
+    border-bottom: 1px solid #e5e7eb;
+    padding: 1rem 2rem;
+
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+header h1 {
+    margin: 0;
+    color: #2563eb;
+    font-size: 1.6rem;
+}
+
+nav {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+nav a {
+    color: #374151;
+    text-decoration: none;
+    font-weight: 600;
+    padding: 0.45rem 0.7rem;
+    border-radius: 6px;
+}
+
+nav a:hover {
+    background: #eff6ff;
+    color: #2563eb;
+}
+
+
+
+
+main {
+    width: min(1000px, 92%);
+    margin: 2rem auto;
+}
+
+h2 {
+    margin-top: 0;
+    color: #111827;
+}
+
+h3 {
+    color: #1f2937;
+    margin-top: 0;
+}
+
+
+
+
+section {
+    background: #ffffff;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+    border-radius: 12px;
+    border: 1px solid #e5e7eb;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+
+
+
+article {
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: 10px;
+    padding: 1.25rem;
+    margin-bottom: 1rem;
+
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+article:hover {
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
+}
+
+article h3 {
+    margin-bottom: 0.7rem;
+}
+
+article p {
+    margin: 0.45rem 0;
+}
+
+
+
+
+form {
+    margin-top: 1rem;
+}
+
+label {
+    display: block;
+    margin-bottom: 0.35rem;
+    font-weight: 600;
+    color: #374151;
+}
+
+input,
+textarea,
+select {
+    display: block;
+    width: 100%;
+    max-width: 650px;
+
+    padding: 0.75rem;
+    margin-bottom: 1rem;
+
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+
+    font: inherit;
+    background: #ffffff;
+    color: #111827;
+}
+
+textarea {
+    min-height: 120px;
+    resize: vertical;
+}
+
+input:focus,
+textarea:focus,
+select:focus {
+    outline: none;
+    border-color: #2563eb;
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+}
+
+
+
+
+button,
+.button {
+    display: inline-block;
+
+    background: #2563eb;
+    color: #ffffff;
+
+    border: none;
+    border-radius: 8px;
+
+    padding: 0.7rem 1rem;
+
+    font: inherit;
+    font-weight: 600;
+
+    cursor: pointer;
+    text-decoration: none;
+
+    transition: background 0.2s ease,
+                transform 0.1s ease;
+}
+
+button:hover,
+.button:hover {
+    background: #1d4ed8;
+}
+
+button:active,
+.button:active {
+    transform: translateY(1px);
+}
+
+
+
+
+main a {
+    color: #2563eb;
+    font-weight: 600;
+    text-decoration: none;
+}
+
+main a:hover {
+    text-decoration: underline;
+}
+
+
+
+
+details {
+    margin: 1rem 0;
+    padding: 1rem;
+
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+}
+
+summary {
+    cursor: pointer;
+    font-weight: 700;
+    color: #2563eb;
+}
+
+
+
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    background: #ffffff;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+th,
+td {
+    padding: 0.8rem;
+    text-align: left;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+th {
+    background: #f8fafc;
+    color: #374151;
+}
+
+
+
+
+main > p {
+    max-width: 750px;
+}
+
+
+
+
+a:focus,
+button:focus,
+input:focus,
+textarea:focus,
+select:focus,
+summary:focus {
+    outline: 3px solid #2563eb;
+    outline-offset: 3px;
+}
+
+
+/* -------------------------
+   Mobile
+------------------------- */
+
+@media (max-width: 700px) {
+
+    header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.8rem;
+        padding: 1rem;
+    }
+
+    nav {
+        gap: 0.4rem;
+    }
+
+    nav a {
+        padding: 0.4rem;
+    }
+
+    main {
+        width: 94%;
+        margin: 1rem auto;
+    }
+
+    section,
+    article {
+        padding: 1rem;
+    }
+
+    input,
+    textarea,
+    select {
+        max-width: 100%;
+    }
+}
