@@ -1,5 +1,7 @@
-from revisionService import RevisionService
+from datetime import datetime, timezone
 
+from revisionService import RevisionService
+import pytest
 
 class FakeCard:
 
@@ -21,16 +23,21 @@ class FakeCard:
         )
 
 
-def test_weak_card_has_higher_priority():
+def test_low_confidence_has_higher_priority():
 
     weak_card = FakeCard(
-        confidence=1
+        confidence=1,
+        last_reviewed_at=datetime.now(
+            timezone.utc
+        )
     )
 
     strong_card = FakeCard(
-        confidence=5
+        confidence=5,
+        last_reviewed_at=datetime.now(
+            timezone.utc
+        )
     )
-
 
     weak_score = (
         RevisionService.calculate_priority(
@@ -44,5 +51,61 @@ def test_weak_card_has_higher_priority():
         )
     )
 
-
     assert weak_score > strong_score
+
+def test_new_card_receives_extra_priority():
+
+    new_card = FakeCard(
+        confidence=3,
+        last_reviewed_at=None
+    )
+
+    reviewed_card = FakeCard(
+        confidence=3,
+        last_reviewed_at=datetime.now(
+            timezone.utc
+        )
+    )
+
+    assert (
+        RevisionService.calculate_priority(
+            new_card
+        )
+        >
+        RevisionService.calculate_priority(
+            reviewed_card
+        )
+    )
+
+def test_high_confidence_schedules_later_review():
+
+    now = datetime.now(
+        timezone.utc
+    )
+
+    weak_date = (
+        RevisionService.calculate_next_review(
+            1,
+            now
+        )
+    )
+
+    strong_date = (
+        RevisionService.calculate_next_review(
+            5,
+            now
+        )
+    )
+
+    assert strong_date > weak_date
+
+
+
+
+def test_invalid_rating_raises_error():
+
+    with pytest.raises(ValueError):
+
+        RevisionService.calculate_next_review(
+            8
+        )
