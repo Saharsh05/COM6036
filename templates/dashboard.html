@@ -79,10 +79,27 @@
                 </p>
 
                 <p>
-                    Priority:
-                    {{ item.priority }}
+                    Revision Priority:
+                    <strong>
+                        {{ item.label }}
+                    </strong>
+                </p>
+                <small>
+                    Priority score: {{ item.priority }}
+                </small>
+                <p>
+                    <strong>Why?</strong>
                 </p>
 
+                <ul>
+                    {% for reason in item.reasons %}
+
+                        <li>
+                            {{ reason }}
+                        </li>
+
+                    {% endfor %}
+                </ul>
                 <a href="{{ url_for(
                     'review_flashcard',
                     card_id=item.card.id

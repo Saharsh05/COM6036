@@ -258,7 +258,21 @@ def create_subject():
             return redirect(
                 url_for("create_subject")
             )
+        existing_subject = Subject.query.filter_by(
+            name=name,
+            user_id=current_user.id
+        ).first()
 
+
+        if existing_subject:
+
+            flash(
+                "You already have a subject with that name."
+            )
+
+            return redirect(
+                url_for("create_subject")
+            )
 
         subject = Subject(
             name=name,
@@ -276,7 +290,6 @@ def create_subject():
         return redirect(
             url_for("dashboard")
         )
-
 
     return render_template(
         "createSubject.html"
@@ -385,10 +398,25 @@ def dashboard():
             )
         )
 
+        label = (
+            RevisionService.priority_label(
+                priority
+            )
+        )
+
+        reasons = (
+            RevisionService.priority_reasons(
+                card
+            )
+        )
+
+
         ranked_cards.append(
             {
                 "card": card,
-                "priority": priority
+                "priority": priority,
+                "label": label,
+                "reasons": reasons
             }
         )
 

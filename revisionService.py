@@ -7,21 +7,17 @@ class RevisionService:
     def calculate_priority(card):
         score = 0
 
-        # Lower confidence = higher priority
         score += (5 - card.confidence) * 10
 
-        # Brand new cards should be reviewed
         if card.last_reviewed_at is None:
             score += 20
 
-        # Overdue cards get extra priority
+        
         if card.next_review_at is not None:
             now = datetime.now(timezone.utc)
 
             next_review = card.next_review_at
 
-            # PostgreSQL may sometimes return a value
-            # without timezone information.
             if next_review.tzinfo is None:
                 next_review = next_review.replace(
                     tzinfo=timezone.utc
@@ -56,3 +52,50 @@ class RevisionService:
         return review_time + timedelta(
             days=intervals[rating]
         )
+    @staticmethod
+    def priority_label(score):
+
+        if score >= 60:
+            return "High"
+
+        if score >= 30:
+            return "Medium"
+
+        return "Low"
+    @staticmethod
+    def priority_reasons(card):
+
+        reasons = []
+
+        if card.confidence <= 2:
+            reasons.append(
+                "low confidence"
+            )
+
+        if card.last_reviewed_at is None:
+            reasons.append(
+                "not reviewed yet"
+            )
+
+        if card.next_review_at is not None:
+
+            now = datetime.now(timezone.utc)
+
+            next_review = card.next_review_at
+
+            if next_review.tzinfo is None:
+                next_review = next_review.replace(
+                    tzinfo=timezone.utc
+                )
+
+            if next_review < now:
+                reasons.append(
+                    "review overdue"
+                )
+
+        if not reasons:
+            reasons.append(
+                "routine revision"
+            )
+
+        return reasons
