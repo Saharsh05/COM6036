@@ -21,31 +21,47 @@
 
         <h1>Flashcards</h1>
 
-        <nav>
+<nav aria-label="Main navigation">
 
-            {% if current_user.is_authenticated %}
+    {% if current_user.is_authenticated %}
 
-                <a href="{{ url_for('dashboard') }}">
-                    Dashboard
-                </a>
+        <a href="{{ url_for('dashboard') }}">
+            Dashboard
+        </a>
 
-                <a href="{{ url_for('logout') }}">
-                    Logout
-                </a>
+        <a href="{{ url_for('subjects') }}">
+            Subjects
+        </a>
 
-            {% else %}
+        <a href="{{ url_for('flashcards') }}">
+            Flashcards
+        </a>
 
-                <a href="{{ url_for('login') }}">
-                    Login
-                </a>
+        <a href="{{ url_for('create_flashcard') }}">
+            Create Flashcard
+        </a>
 
-                <a href="{{ url_for('register') }}">
-                    Register
-                </a>
+        <a href="{{ url_for('create_subject') }}">
+            Create Subject
+        </a>
 
-            {% endif %}
+        <a href="{{ url_for('logout') }}">
+            Logout
+        </a>
 
-        </nav>
+    {% else %}
+
+        <a href="{{ url_for('login') }}">
+            Login
+        </a>
+
+        <a href="{{ url_for('register') }}">
+            Register
+        </a>
+
+    {% endif %}
+
+</nav>
 
     </header>
 

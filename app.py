@@ -294,6 +294,18 @@ def create_subject():
     return render_template(
         "createSubject.html"
     )
+@app.route("/subjects")
+@login_required
+def subjects():
+
+    user_subjects = Subject.query.filter_by(
+        user_id=current_user.id
+    ).all()
+
+    return render_template(
+        "subjects.html",
+        subjects=user_subjects
+    )
 @app.route(
     "/flashcards/new",
     methods=["GET", "POST"]
@@ -351,7 +363,26 @@ def create_flashcard():
                 url_for("create_flashcard")
             )
 
+        if len(question) > 500:
 
+            flash(
+                "Question must be 500 characters or fewer."
+            )
+
+            return redirect(
+                url_for("create_flashcard")
+            )
+
+
+        if len(answer) > 5000:
+
+            flash(
+                "Answer must be 5,000 characters or fewer."
+            )
+
+            return redirect(
+                url_for("create_flashcard")
+            )
         card = Flashcard(
             question=question,
             answer=answer,
@@ -709,6 +740,37 @@ def review_history(card_id):
         "review_history.html",
         card=card,
         reviews=reviews
+    )
+@app.route(
+    "/subjects/<int:subject_id>/delete",
+    methods=["POST"]
+)
+@login_required
+def delete_subject(subject_id):
+
+    subject = Subject.query.filter_by(
+        id=subject_id,
+        user_id=current_user.id
+    ).first_or_404()
+
+    if subject.flashcards:
+
+        flash(
+            "Delete or move the flashcards in this subject first."
+        )
+
+        return redirect(
+            url_for("subjects")
+        )
+
+    db.session.delete(subject)
+
+    db.session.commit()
+
+    flash("Subject deleted.")
+
+    return redirect(
+        url_for("dashboard")
     )
 if __name__ == "__main__":
     app.run(debug=True)
