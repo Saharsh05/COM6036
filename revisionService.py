@@ -1,10 +1,11 @@
 from datetime import datetime, timedelta, timezone
 
-
+# Scoring and scheduling logic for the spaced-repetition system.
 class RevisionService:
 
     @staticmethod
     def calculate_priority(card):
+        # Higher scores mean the card should be reviewed sooner.
         score = 0
 
         score += (5 - card.confidence) * 10
@@ -31,6 +32,7 @@ class RevisionService:
 
     @staticmethod
     def calculate_next_review(rating, review_time=None):
+        # Map rating to the number of days until the next review.
 
         if review_time is None:
             review_time = datetime.now(timezone.utc)

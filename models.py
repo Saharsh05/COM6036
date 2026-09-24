@@ -6,7 +6,7 @@ from werkzeug.security import check_password_hash
 
 from extensions import db
 
-
+# Core database models for the flashcard app.
 class User(UserMixin, db.Model):
 
     __tablename__ = "users"
@@ -45,6 +45,7 @@ class User(UserMixin, db.Model):
             password
         )
 
+# Subjects group flashcards by topic for each user.
 class Subject(db.Model):
 
     __tablename__ = "subjects"
@@ -70,6 +71,7 @@ class Subject(db.Model):
         backref="subjects"
     )
 
+# Flashcards store the question, answer and revision data.
 class Flashcard(db.Model):
 
     __tablename__ = "flashcards"
@@ -132,6 +134,7 @@ class Flashcard(db.Model):
         backref="flashcards"
     )
 
+# ReviewLog tracks each user rating from a revision session.
 class ReviewLog(db.Model):
 
     __tablename__ = "review_logs"

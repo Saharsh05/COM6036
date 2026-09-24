@@ -27,7 +27,7 @@ from flask_login import (
 
 load_dotenv()
 
-
+# Main Flask app setup.
 app = Flask(__name__)
 
 
@@ -62,7 +62,7 @@ csrf.init_app(app)
 
 login_manager.login_view = "login"
 
-
+# Load the logged-in user for Flask-Login.
 @login_manager.user_loader
 def load_user(user_id):
 
@@ -71,17 +71,7 @@ def load_user(user_id):
         int(user_id)
     )
 
-# @app.route("/database-test")
-# def database_test():
-
-#     try:
-#         db.session.execute(text("SELECT 1"))
-
-#         return "Database connection successful!"
-
-#     except Exception as error:
-
-#         return f"Database connection failed: {error}"
+# Route used to register a new user account.
 @app.route(
     "/register",
     methods=["GET", "POST"]
@@ -174,6 +164,7 @@ def register():
         "register.html"
     )
 
+# Route for logging a user in.
 @app.route(
     "/login",
     methods=["GET", "POST"]
@@ -407,6 +398,7 @@ def create_flashcard():
         "createFlashcard.html",
         subjects=subjects
     )
+# Dashboard shows the user's most urgent flashcards.
 @app.route("/dashboard")
 @login_required
 def dashboard():
@@ -501,6 +493,7 @@ def dashboard():
         average_confidence=average_confidence,
         due_count=due_count
     )
+# Review a flashcard and record the rating.
 @app.route(
     "/flashcards/<int:card_id>/review",
     methods=["GET", "POST"]
@@ -565,6 +558,7 @@ def review_flashcard(card_id):
         card=card
     )
 
+# Show all flashcards and allow searching/filtering.
 @app.route("/flashcards")
 @login_required
 def flashcards():
@@ -772,5 +766,6 @@ def delete_subject(subject_id):
     return redirect(
         url_for("dashboard")
     )
+# Run the app locally in debug mode during development.
 if __name__ == "__main__":
     app.run(debug=True)

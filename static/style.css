@@ -83,7 +83,6 @@ section {
     margin-bottom: 1.5rem;
     border-radius: 12px;
     border: 1px solid #e5e7eb;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
 }
 
 
@@ -96,12 +95,8 @@ article {
     padding: 1.25rem;
     margin-bottom: 1rem;
 
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
 }
 
-article:hover {
-    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
-}
 
 article h3 {
     margin-bottom: 0.7rem;
@@ -153,7 +148,6 @@ textarea:focus,
 select:focus {
     outline: none;
     border-color: #2563eb;
-    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
 }
 
 
@@ -263,41 +257,4 @@ select:focus,
 summary:focus {
     outline: 3px solid #2563eb;
     outline-offset: 3px;
-}
-
-
-
-
-@media (max-width: 700px) {
-
-    header {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 0.8rem;
-        padding: 1rem;
-    }
-
-    nav {
-        gap: 0.4rem;
-    }
-
-    nav a {
-        padding: 0.4rem;
-    }
-
-    main {
-        width: 94%;
-        margin: 1rem auto;
-    }
-
-    section,
-    article {
-        padding: 1rem;
-    }
-
-    input,
-    textarea,
-    select {
-        max-width: 100%;
-    }
 }
